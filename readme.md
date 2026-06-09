@@ -9,6 +9,8 @@ Proyecto local para avanzar a la par de las clases, adaptando el ServerExpress d
 - MySQL2
 - Joi
 - dotenv
+- bcrypt
+- jsonwebtoken
 
 ## Rutas disponibles
 
@@ -25,6 +27,11 @@ Proyecto local para avanzar a la par de las clases, adaptando el ServerExpress d
 - `PUT /carreras`
 - `DELETE /carreras/:id`
 
+### Usuarios
+
+- `POST /usuarios`
+- `POST /usuarios/login`
+
 ## Configuracion del entorno
 
 Crear un archivo `.env` en la raiz del proyecto:
@@ -37,6 +44,8 @@ DB_PORT=3306
 DB_DATABASE="tp_integrador"
 DB_USER='xxxx'
 DB_PASSWORD='xxxx'
+
+JWT_SECRET='xxxx'
 ```
 
 ## Scripts SQL vistos en clase
@@ -48,6 +57,8 @@ CREATE TABLE usuarios (
     usu_id INT AUTO_INCREMENT,
     usu_usuario VARCHAR(30) NOT NULL,
     usu_nombre VARCHAR(100) NOT NULL,
+    usu_password VARCHAR(255) NOT NULL,
+    usu_esadmin BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (usu_id)
 );
 ```
@@ -92,8 +103,6 @@ ALTER TABLE carrera
 
 ## Pendiente para proximas iteraciones
 
-- Usuarios y roles completos
 - Alumnos
 - Inscripciones
-- Autenticacion con JWT
-- Encriptacion de contrasenas con bcrypt
+- Validaciones Joi para usuarios y login
