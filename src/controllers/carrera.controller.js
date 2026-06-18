@@ -35,7 +35,8 @@ async function updateCarrera(req, res, next){
 async function deleteCarrera(req, res, next){
     try {
         const id = req.params.id
-        const resultado = await serviceCarrera.delete(id)
+        const idUsuario = req.body.idUsuario
+        const resultado = await serviceCarrera.delete(id, idUsuario)
         res.status(200).json(resultado)       
     } catch (error) {
         next(error)        

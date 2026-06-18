@@ -33,11 +33,12 @@ class MateriaService {
     async post(materia) {
         const sql =
             `INSERT INTO materia(mat_nombre, mat_id_carrera, mat_usualta, mat_fechaalta)
-            VALUES(?, ?, 1, CURRENT_TIMESTAMP())`
+            VALUES(?, ?, ?, CURRENT_TIMESTAMP())`
         
         const [result] = await pool.query(sql, [
             materia.nombre,
-            materia.carrera
+            materia.carrera,
+            materia.idUsuario
         ])
 
         return {

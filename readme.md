@@ -18,19 +18,29 @@ Proyecto local para avanzar a la par de las clases, adaptando el ServerExpress d
 
 - `GET /materias`
 - `GET /materias/carrera/:carrera`
-- `POST /materias`
+- `POST /materias` - requiere token de administrador
 
 ### Carreras
 
 - `GET /carreras`
-- `POST /carreras`
-- `PUT /carreras`
-- `DELETE /carreras/:id`
+- `POST /carreras` - requiere token de administrador
+- `PUT /carreras` - requiere token de administrador
+- `DELETE /carreras/:id` - requiere token de administrador
 
 ### Usuarios
 
 - `POST /usuarios`
 - `POST /usuarios/login`
+
+## Autenticacion
+
+Las rutas protegidas usan JWT en el header `Authorization`:
+
+```http
+Authorization: Bearer TOKEN
+```
+
+El login devuelve un token cuando las credenciales son correctas.
 
 ## Configuracion del entorno
 
@@ -100,6 +110,13 @@ ALTER TABLE carrera
 - `PUT /carreras` registra usuario y fecha de modificacion.
 - `DELETE /carreras/:id` hace baja logica con usuario y fecha de baja.
 - `POST /materias` registra usuario y fecha de alta.
+
+## Cambios de las ultimas clases adaptados al TP
+
+- Se agrego manejo de usuarios.
+- Se agrego login con JWT.
+- Se agrego middleware `checkAdmin`.
+- Las altas, modificaciones y bajas protegidas toman el usuario desde el token.
 
 ## Pendiente para proximas iteraciones
 

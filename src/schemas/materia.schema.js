@@ -12,10 +12,12 @@ const nombre = joi.string().min(3).max(50).messages({
 })
 
 const carrera = id.required()
+const idUsuario = joi.number()
 
 const postMateriaSchema = joi.object({
     nombre: nombre.required(),
-    carrera: carrera
+    carrera: carrera,
+    idUsuario: idUsuario.required()
 })
 
 const paramCarreraSchema = joi.object({
