@@ -915,6 +915,8 @@ Si es alumno, puede enviar solo:
 
 En ese caso se usa el id del token.
 
+Si un alumno intenta enviar un `alumnoId` distinto al suyo, la API responde `403`. Esto evita que un alumno pueda inscribir a otra persona.
+
 ### Dar de baja una inscripcion
 
 Ruta:
@@ -1027,7 +1029,7 @@ Los services son los archivos que hablan con MySQL.
 
 Si te piden explicar `POST /inscripciones`:
 
-> La ruta primero autentica el token y valida que el rol sea Administrador o Alumno. Despues valida el body con Joi. En el controller, si el usuario autenticado es Alumno, se fuerza `alumnoId` al id del token, asi un alumno no puede inscribir a otro. Luego el service valida que el alumno exista y este activo, que la materia exista y este activa, y que no haya una inscripcion duplicada. Finalmente inserta la inscripcion con `usuario_alta_id` para auditoria.
+> La ruta primero autentica el token y valida que el rol sea Administrador o Alumno. Despues valida el body con Joi. En el controller, si el usuario autenticado es Alumno y manda un `alumnoId` distinto al suyo, se responde `403`; si no manda `alumnoId`, se usa el id del token. Luego el service valida que el alumno exista y este activo, que la materia exista y este activa, y que no haya una inscripcion duplicada. Finalmente inserta la inscripcion con `usuario_alta_id` para auditoria.
 
 ## 24. Postman
 

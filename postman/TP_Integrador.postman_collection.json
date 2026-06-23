@@ -590,7 +590,7 @@
                 "inscripciones"
               ]
             },
-            "description": "Admin puede inscribir cualquier alumno. Alumno tambien puede, pero el backend fuerza alumnoId al id del token."
+            "description": "Admin puede inscribir cualquier alumno. Si el token es Alumno y manda el id de otro alumno, la API responde 403."
           },
           "response": []
         },

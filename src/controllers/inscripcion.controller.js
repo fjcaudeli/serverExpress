@@ -8,6 +8,10 @@ async function postInscripcion(req, res, next) {
         const datos = { ...req.body }
 
         if (req.user.rol === 'Alumno') {
+            if (datos.alumnoId && Number(datos.alumnoId) !== req.user.id) {
+                throw crearError(403, 'No puede inscribir a otro alumno')
+            }
+
             datos.alumnoId = req.user.id
         }
 
