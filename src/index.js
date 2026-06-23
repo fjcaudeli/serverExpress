@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 app.use(errorLog)
 app.use(errorHandler)
 
-const puerto = process.env.PUERTO
+const puerto = process.env.PUERTO || 3000
 app.listen(puerto, async () =>{
     await testConnection()
     console.log(`Servidor escuchando en el puerto ${puerto}`)
