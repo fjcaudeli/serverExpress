@@ -1,24 +1,65 @@
 const express = require('express')
 const {
-    getMateria,
-    getMateriaPorCarrera,
+    getMaterias,
+    getMateriaPorId,
+    postMateria,
+    putMateria,
+    deleteMateria,
+    getAlumnosPorMateria
+} = require('../controllers/materia.controller')
+const {
+    autenticar,
+    autorizarRoles
+} = require('../middlewares/authHandler')
+const { validator } = require('../middlewares/validatorHandler')
+const {
+    idParamSchema,
+    listarMateriasSchema,
+    crearMateriaSchema,
+    editarMateriaSchema
+} = require('../schemas/materia.schema')
+
+const router = express.Router()
+
+router.get('/',
+    autenticar,
+    validator(listarMateriasSchema, 'query'),
+    getMaterias
+)
+
+router.get('/:id/alumnos',
+    autenticar,
+    autorizarRoles('Administrador', 'Coordinador'),
+    validator(idParamSchema, 'params'),
+    getAlumnosPorMateria
+)
+
+router.get('/:id',
+    autenticar,
+    validator(idParamSchema, 'params'),
+    getMateriaPorId
+)
+
+router.post('/',
+    autenticar,
+    autorizarRoles('Administrador'),
+    validator(crearMateriaSchema, 'body'),
     postMateria
- } = require('../controllers/materia.controller')
- const { 
-    postMateriaSchema, 
-    paramCarreraSchema } = require('../schemas/materia.schema')
- const { validator } = require('../middlewares/validatorHandler')
- const { checkAdmin } = require('../middlewares/secure')
+)
 
+router.put('/:id',
+    autenticar,
+    autorizarRoles('Administrador'),
+    validator(idParamSchema, 'params'),
+    validator(editarMateriaSchema, 'body'),
+    putMateria
+)
 
-const materiasRouter = express.Router()
-materiasRouter.get('/', getMateria)
-materiasRouter.get('/carrera/:carrera',
-    validator(paramCarreraSchema, 'params'), 
-    getMateriaPorCarrera)
-materiasRouter.post('/',
-    checkAdmin(),  
-    validator(postMateriaSchema, 'body'), 
-    postMateria)
+router.delete('/:id',
+    autenticar,
+    autorizarRoles('Administrador'),
+    validator(idParamSchema, 'params'),
+    deleteMateria
+)
 
-module.exports = materiasRouter
+module.exports = router

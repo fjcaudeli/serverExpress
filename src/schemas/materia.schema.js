@@ -1,27 +1,36 @@
 const joi = require('joi')
 
-const id = joi.number().min(1).messages({
+const id = joi.number().integer().min(1).required().messages({
     'any.required': 'El id es obligatorio',
-    'number.min': 'El id debe ser igual o mayor a {#limit}'
+    'number.base': 'El id debe ser numerico',
+    'number.min': 'El id debe ser mayor a 0'
 })
 
-const nombre = joi.string().min(3).max(50).messages({
-    'any.required': 'El nombre es obligatorio',
-    'string.min': 'El nombre debe tener por lo menos {#limit} caracteres',
-    'string.max': 'El nombre debe tener como maximo {#limit} caracteres'
+const nombre = joi.string().min(3).max(100)
+const carreraId = joi.number().integer().min(1)
+
+const idParamSchema = joi.object({
+    id
 })
 
-const carrera = id.required()
-const idUsuario = joi.number()
+const listarMateriasSchema = joi.object({
+    todos: joi.string().valid('true', 'false').optional(),
+    incluirBajas: joi.string().valid('true', 'false').optional()
+})
 
-const postMateriaSchema = joi.object({
+const crearMateriaSchema = joi.object({
     nombre: nombre.required(),
-    carrera: carrera,
-    idUsuario: idUsuario.required()
+    carreraId: carreraId.required()
 })
 
-const paramCarreraSchema = joi.object({
-    carrera: carrera
-})
+const editarMateriaSchema = joi.object({
+    nombre,
+    carreraId
+}).min(1)
 
-module.exports = { postMateriaSchema, paramCarreraSchema }
+module.exports = {
+    idParamSchema,
+    listarMateriasSchema,
+    crearMateriaSchema,
+    editarMateriaSchema
+}

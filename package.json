@@ -4,7 +4,9 @@
   "description": "API RESTful para el TP integrador de alumnos, materias e inscripciones",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "db:seed": "node src/db/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "fjcaudeli",

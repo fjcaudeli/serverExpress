@@ -1,125 +1,123 @@
 # TP Integrador - API RESTful
 
-Proyecto local para avanzar a la par de las clases, adaptando el ServerExpress del profesor al dominio del TP integrador.
+API hecha con Node.js, Express y MySQL para gestionar alumnos, materias e inscripciones.
 
-## Tecnologias
+## Instalacion
 
-- Node.js
-- Express
-- MySQL2
-- Joi
-- dotenv
-- bcrypt
-- jsonwebtoken
+1. Instalar dependencias:
 
-## Rutas disponibles
+```bash
+npm install
+```
 
-### Materias
+2. Crear un archivo `.env` tomando como base `.env.example`.
 
-- `GET /materias`
-- `GET /materias/carrera/:carrera`
-- `POST /materias` - requiere token de administrador
+3. Crear la base de datos ejecutando el script:
 
-### Carreras
+```sql
+src/db/schema.sql
+```
 
-- `GET /carreras`
-- `POST /carreras` - requiere token de administrador
-- `PUT /carreras` - requiere token de administrador
-- `DELETE /carreras/:id` - requiere token de administrador
+4. Crear usuarios de prueba:
 
-### Usuarios
+```bash
+npm run db:seed
+```
 
-- `POST /usuarios`
-- `POST /usuarios/login`
+5. Levantar el servidor:
+
+```bash
+npm start
+```
+
+## Usuarios de prueba
+
+| Rol | Usuario | Password |
+| --- | --- | --- |
+| Administrador | admin | admin123 |
+| Coordinador | coordinador | coord123 |
+| Alumno | alumno | alumno123 |
 
 ## Autenticacion
 
-Las rutas protegidas usan JWT en el header `Authorization`:
+Login:
+
+```http
+POST /login
+Content-Type: application/json
+
+{
+  "usuario": "admin",
+  "password": "admin123"
+}
+```
+
+Las rutas protegidas usan el token JWT en el header:
 
 ```http
 Authorization: Bearer TOKEN
 ```
 
-El login devuelve un token cuando las credenciales son correctas.
+## Rutas principales
 
-## Configuracion del entorno
+### Alumnos
 
-Crear un archivo `.env` en la raiz del proyecto:
+- `GET /alumnos` - Lista alumnos activos. Admin y coordinador.
+- `GET /alumnos?todos=true` - Lista activos y dados de baja. Admin y coordinador.
+- `GET /alumnos/:id` - Admin, coordinador o el mismo alumno.
+- `POST /alumnos` - Crea alumno. Solo administrador.
+- `PUT /alumnos/:id` - Edita alumno. Administrador o el mismo alumno.
+- `DELETE /alumnos/:id` - Baja logica. Solo administrador.
+- `GET /alumnos/:id/materias` - Materias de un alumno. Admin, coordinador o el mismo alumno.
 
-```env
-PUERTO=3000
+### Materias
 
-DB_HOST="localhost"
-DB_PORT=3306
-DB_DATABASE="tp_integrador"
-DB_USER='xxxx'
-DB_PASSWORD='xxxx'
+- `GET /materias` - Lista materias activas.
+- `GET /materias/:id` - Detalle de materia.
+- `POST /materias` - Crea materia. Solo administrador.
+- `PUT /materias/:id` - Edita materia. Solo administrador.
+- `DELETE /materias/:id` - Baja logica. Solo administrador.
+- `GET /materias/:id/alumnos` - Alumnos inscriptos. Admin o coordinador.
 
-JWT_SECRET='xxxx'
+### Inscripciones
+
+- `POST /inscripciones` - Inscribe un alumno en una materia. Alumno autenticado o administrador.
+- `DELETE /inscripciones` - Baja logica de inscripcion. Alumno inscripto o administrador.
+
+Ejemplo de alta:
+
+```json
+{
+  "alumnoId": 3,
+  "materiaId": 1
+}
 ```
 
-## Scripts SQL vistos en clase
+Si el usuario autenticado tiene rol `Alumno`, no hace falta enviar `alumnoId`: se usa el id del token.
 
-### Crear tabla de usuarios
+Ejemplo de baja por id:
 
-```sql
-CREATE TABLE usuarios (
-    usu_id INT AUTO_INCREMENT,
-    usu_usuario VARCHAR(30) NOT NULL,
-    usu_nombre VARCHAR(100) NOT NULL,
-    usu_password VARCHAR(255) NOT NULL,
-    usu_esadmin BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (usu_id)
-);
+```json
+{
+  "id": 1
+}
 ```
 
-### Agregar campos de auditoria a `materia`
+Ejemplo de baja por alumno y materia:
 
-```sql
-ALTER TABLE materia
-    ADD COLUMN mat_usualta INT,
-    ADD COLUMN mat_fechaalta DATETIME,
-    ADD COLUMN mat_usumodif INT,
-    ADD COLUMN mat_fechamodif DATETIME,
-    ADD COLUMN mat_usubaja INT,
-    ADD COLUMN mat_fechabaja DATETIME,
-    ADD CONSTRAINT fk_materia_usualta FOREIGN KEY (mat_usualta) REFERENCES usuarios(usu_id),
-    ADD CONSTRAINT fk_materia_usumodif FOREIGN KEY (mat_usumodif) REFERENCES usuarios(usu_id),
-    ADD CONSTRAINT fk_materia_usubaja FOREIGN KEY (mat_usubaja) REFERENCES usuarios(usu_id);
+```json
+{
+  "alumnoId": 3,
+  "materiaId": 1
+}
 ```
 
-### Agregar campos de auditoria a `carrera`
+## Auditoria y baja logica
 
-```sql
-ALTER TABLE carrera
-    ADD COLUMN car_usualta INT,
-    ADD COLUMN car_fechaalta DATETIME,
-    ADD COLUMN car_usumodif INT,
-    ADD COLUMN car_fechamodif DATETIME,
-    ADD COLUMN car_usubaja INT,
-    ADD COLUMN car_fechabaja DATETIME,
-    ADD CONSTRAINT fk_carrera_usualta FOREIGN KEY (car_usualta) REFERENCES usuarios(usu_id),
-    ADD CONSTRAINT fk_carrera_usumodif FOREIGN KEY (car_usumodif) REFERENCES usuarios(usu_id),
-    ADD CONSTRAINT fk_carrera_usubaja FOREIGN KEY (car_usubaja) REFERENCES usuarios(usu_id);
-```
+Todas las tablas principales tienen:
 
-## Cambios de la clase del 26/05 adaptados al TP
+- `fecha_alta`, `usuario_alta_id`
+- `fecha_modificacion`, `usuario_modificacion_id`
+- `fecha_baja`, `usuario_baja_id`
 
-- `carreras` ahora consulta la base de datos.
-- `POST /carreras` registra usuario y fecha de alta.
-- `PUT /carreras` registra usuario y fecha de modificacion.
-- `DELETE /carreras/:id` hace baja logica con usuario y fecha de baja.
-- `POST /materias` registra usuario y fecha de alta.
-
-## Cambios de las ultimas clases adaptados al TP
-
-- Se agrego manejo de usuarios.
-- Se agrego login con JWT.
-- Se agrego middleware `checkAdmin`.
-- Las altas, modificaciones y bajas protegidas toman el usuario desde el token.
-
-## Pendiente para proximas iteraciones
-
-- Alumnos
-- Inscripciones
-- Validaciones Joi para usuarios y login
+No se eliminan registros fisicamente. Una entidad esta activa cuando `fecha_baja IS NULL`.

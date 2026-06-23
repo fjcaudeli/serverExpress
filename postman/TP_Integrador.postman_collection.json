@@ -1,0 +1,837 @@
+{
+  "info": {
+    "_postman_id": "8cb3372a-1d7e-4a76-b59f-4eb92d0b5a45",
+    "name": "TP Integrador - Alumnos, Materias e Inscripciones",
+    "description": "Collection para probar la API RESTful del TP Integrador en Express y MySQL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "tokenAdmin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tokenCoordinador",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tokenAlumno",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "alumnoId",
+      "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "materiaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "inscripcionId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login admin OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('tokenAdmin', data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Coordinador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login coordinador OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('tokenCoordinador', data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"coordinador\",\n  \"password\": \"coord123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Alumno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login alumno OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('tokenAlumno', data.token);",
+                  "pm.collectionVariables.set('alumnoId', data.usuario.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"alumno\",\n  \"password\": \"alumno123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Alumnos",
+      "item": [
+        {
+          "name": "Listar alumnos activos - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar alumnos incluyendo bajas - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos?todos=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ],
+              "query": [
+                {
+                  "key": "todos",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver alumno por id - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear alumno - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Alumno creado', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('alumnoId', data.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Alumno Postman\",\n  \"mail\": \"alumno{{$timestamp}}@postman.com\",\n  \"usuario\": \"alumno_{{$timestamp}}\",\n  \"password\": \"alumno123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar alumno - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Alumno Postman Editado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja logica alumno - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver mis datos - Alumno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAlumno}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Materias",
+      "item": [
+        {
+          "name": "Listar materias - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver materia por id - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear materia - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Materia creada', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('materiaId', data.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Materia Postman {{$timestamp}}\",\n  \"carreraId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar materia - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Materia Postman Editada\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja logica materia - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Alumnos de una materia - Coordinador",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenCoordinador}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}",
+                "alumnos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inscripciones",
+      "item": [
+        {
+          "name": "Inscribir alumno - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Inscripcion creada', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const data = pm.response.json();",
+                  "    pm.collectionVariables.set('inscripcionId', data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alumnoId\": {{alumnoId}},\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inscribirme a materia - Alumno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Inscripcion creada o ya existente', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const data = pm.response.json();",
+                  "    pm.collectionVariables.set('inscripcionId', data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAlumno}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Materias de un alumno - Alumno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAlumno}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}",
+                "materias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja inscripcion por id - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{inscripcionId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja inscripcion por alumno y materia - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alumnoId\": {{alumnoId}},\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

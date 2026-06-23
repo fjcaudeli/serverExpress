@@ -5,7 +5,7 @@ function validator(schema, property){
         if (result.error) {
             const error = new Error(result.error.details[0].message)
             error.status = 400
-            next(error)
+            return next(error)
         }
         next()
     }
