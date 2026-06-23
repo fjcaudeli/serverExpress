@@ -1,0 +1,693 @@
+{
+  "info": {
+    "_postman_id": "e59cbdc1-1b47-4b3f-8d77-f154a863f201",
+    "name": "TP Integrador - Token unico",
+    "description": "Collection final del TP. Todos los endpoints protegidos usan la variable {{token}}. Cualquier login pisa esa variable, asi el ultimo usuario logueado es el que queda activo para las pruebas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "usuarioActualId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rolActual",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "alumnoId",
+      "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "materiaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "inscripcionId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Healthcheck",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "01 - Login",
+      "item": [
+        {
+          "name": "Login Admin - deja token admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token', data.token);",
+                  "pm.collectionVariables.set('usuarioActualId', data.usuario.id);",
+                  "pm.collectionVariables.set('rolActual', data.usuario.rol);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Coordinador - deja token coordinador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token', data.token);",
+                  "pm.collectionVariables.set('usuarioActualId', data.usuario.id);",
+                  "pm.collectionVariables.set('rolActual', data.usuario.rol);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"coordinador\",\n  \"password\": \"coord123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Alumno - deja token alumno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token', data.token);",
+                  "pm.collectionVariables.set('usuarioActualId', data.usuario.id);",
+                  "pm.collectionVariables.set('rolActual', data.usuario.rol);",
+                  "pm.collectionVariables.set('alumnoId', data.usuario.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"alumno\",\n  \"password\": \"alumno123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Alumnos",
+      "item": [
+        {
+          "name": "Listar alumnos - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar alumnos incluyendo bajas - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos?todos=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ],
+              "query": [
+                {
+                  "key": "todos",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver alumno por id - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear alumno - usa token actual",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set('alumnoId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Alumno Demo {{$timestamp}}\",\n  \"mail\": \"alumno{{$timestamp}}@tp.com\",\n  \"usuario\": \"alumno_{{$timestamp}}\",\n  \"password\": \"alumno123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos"
+              ]
+            },
+            "description": "Con token Admin deberia crear. Con token Coordinador o Alumno deberia responder 403."
+          },
+          "response": []
+        },
+        {
+          "name": "Editar alumno - usa token actual",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Alumno Editado {{$timestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja logica alumno - usa token actual",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}"
+              ]
+            },
+            "description": "Solo Admin deberia poder ejecutar este endpoint."
+          },
+          "response": []
+        },
+        {
+          "name": "Materias del alumno - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumnos/{{alumnoId}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumnos",
+                "{{alumnoId}}",
+                "materias"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Materias",
+      "item": [
+        {
+          "name": "Listar materias - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar materias incluyendo bajas - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias?todos=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias"
+              ],
+              "query": [
+                {
+                  "key": "todos",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver materia por id - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear materia - usa token actual",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set('materiaId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Materia Demo {{$timestamp}}\",\n  \"carreraId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias"
+              ]
+            },
+            "description": "Solo Admin deberia poder crear materias."
+          },
+          "response": []
+        },
+        {
+          "name": "Editar materia - usa token actual",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Materia Editada {{$timestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja logica materia - usa token actual",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}"
+              ]
+            },
+            "description": "Solo Admin deberia poder dar de baja materias."
+          },
+          "response": []
+        },
+        {
+          "name": "Alumnos de una materia - usa token actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materias/{{materiaId}}/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materias",
+                "{{materiaId}}",
+                "alumnos"
+              ]
+            },
+            "description": "Admin y Coordinador deberian poder; Alumno deberia recibir 403."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Inscripciones",
+      "item": [
+        {
+          "name": "Crear inscripcion - usa token actual",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set('inscripcionId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alumnoId\": {{alumnoId}},\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            },
+            "description": "Admin puede inscribir cualquier alumno. Alumno tambien puede, pero el backend fuerza alumnoId al id del token."
+          },
+          "response": []
+        },
+        {
+          "name": "Inscribirme como alumno - usa token actual",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set('inscripcionId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            },
+            "description": "Pensado para ejecutar despues de Login Alumno. Usa el alumnoId del token."
+          },
+          "response": []
+        },
+        {
+          "name": "Baja inscripcion por id - usa token actual",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{inscripcionId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Baja inscripcion por alumno y materia - usa token actual",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alumnoId\": {{alumnoId}},\n  \"materiaId\": {{materiaId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
