@@ -2,7 +2,25 @@
 
 API hecha con Node.js, Express y MySQL para gestionar alumnos, materias e inscripciones.
 
+## Frontend React
+
+El front esta en [`frontend/`](frontend/README.md). En una segunda terminal,
+desde esa carpeta, ejecutar `npm install` y `npm run dev`. Requiere esta API
+funcionando en el puerto 3000 y MySQL iniciado. El README del front explica los
+temas de clase aplicados, los permisos y el recorrido de demostracion.
+
 ## Instalacion
+
+### Alternativa: backend en Docker
+
+La configuracion del contenedor esta en `Dockerfile` y `compose.yaml`.
+Con Docker Desktop operativo y MySQL iniciado, el backend se arranca desde
+esta carpeta con `docker compose up -d --build`, en lugar de `npm start`.
+No ejecutar ambos sobre el puerto 3000. MySQL sigue en Windows y el front
+no cambia. Ver requisitos, verificaciones y guion en
+[`DOCKER_DEMO.md`](DOCKER_DEMO.md).
+
+### Ejecucion directa con Node
 
 1. Instalar dependencias:
 
