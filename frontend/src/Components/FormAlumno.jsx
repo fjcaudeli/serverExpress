@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Save } from 'lucide-react'
 import api, { mensajeError } from '../services/api'
 import { datosAlumno } from '../utils'
@@ -16,11 +16,19 @@ function FormAlumno({ alumno, cerrar, guardado }) {
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
 
+  // Abrir y cerrar el formulario permite observar montaje y desmontaje.
+  useEffect(() => {
+    console.log('FormAlumno: componente montado')
+    return () => {
+      console.log('FormAlumno: componente desmontado')
+    }
+  }, [])
+
   function cambiar(evento) {
     setFormulario({ ...formulario, [evento.target.name]: evento.target.value })
   }
 
-  async function guardar(evento) {
+  async function guardar(evento) { // Función para enviar el formulario de alumno
     evento.preventDefault()
     setGuardando(true)
     setError('')

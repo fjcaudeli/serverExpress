@@ -7,7 +7,7 @@ import { fecha } from '../utils'
 import Boton from '../Components/Boton'
 import Mensaje from '../Components/Mensaje'
 
-function Inscripciones() {
+function Inscripciones() { // Componente de la pagina de inscripciones
   const usuario = useAuthStore((estado) => estado.usuario)
   const [parametros, setParametros] = useSearchParams()
   const esAlumno = usuario.rol === 'Alumno'
@@ -80,7 +80,7 @@ function Inscripciones() {
     }
   }, [alumnoId, revision])
 
-  async function inscribir(evento) {
+  async function inscribir(evento) { // Función para enviar el formulario de inscripcion
     evento.preventDefault()
     setOcupado(true)
     setErrorAccion('')
@@ -100,7 +100,7 @@ function Inscripciones() {
     }
   }
 
-  async function baja(inscripcion) {
+  async function baja(inscripcion) { // Función para dar de baja una inscripcion
     if (!window.confirm(`Dar de baja la inscripcion a ${inscripcion.materia}?`))
       return
     setOcupado(true)

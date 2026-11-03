@@ -16,7 +16,7 @@ import Mensaje from '../Components/Mensaje'
 import Estado from '../Components/Estado'
 import FormAlumno from '../Components/FormAlumno'
 
-function Alumnos() {
+function Alumnos() { // Componente de la pagina de alumnos
   const esAdmin = useAuthStore(
     (estado) => estado.usuario.rol === 'Administrador',
   )
@@ -30,7 +30,15 @@ function Alumnos() {
   const [revision, setRevision] = useState(0)
   const [ocupado, setOcupado] = useState(false)
 
+  // Estos mensajes permiten mostrar el ciclo de vida en DevTools.
   useEffect(() => {
+    console.log('Alumnos: componente montado')
+    return () => {
+      console.log('Alumnos: componente desmontado')
+    }
+  }, [])
+
+  useEffect(() => {  // Cargamos la lista de alumnos
     let activo = true
     async function cargar() {
       setCargando(true)
@@ -67,7 +75,7 @@ function Alumnos() {
   }
 
   // filter busca sin modificar el array original; map crea las filas de la tabla.
-  const filtrados = alumnos.filter((alumno) =>
+  const filtrados = alumnos.filter((alumno) =>//
     coincideBusqueda(
       `${alumno.nombre} ${alumno.mail} ${alumno.usuario} ${alumno.id}`,
       busqueda,

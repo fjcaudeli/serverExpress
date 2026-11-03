@@ -6,7 +6,7 @@ import api, { mensajeError } from '../services/api'
 import Boton from '../Components/Boton'
 import Mensaje from '../Components/Mensaje'
 
-function Login() {
+function Login() {  // Componente de la pagina de login
   const [usuario, setUsuario] = useState('')
   const [password, setPassword] = useState('')
   const [visible, setVisible] = useState(false)
@@ -18,7 +18,7 @@ function Login() {
   const navigate = useNavigate()
 
   // Fetch, como en UsuariosConFetch: comprobamos la respuesta publica de Express.
-  useEffect(() => {
+  useEffect(() => {  // Comprobamos la conexion con la API
     const controller = new AbortController()
     async function comprobar() {
       setConexion('Comprobando API...')
@@ -35,7 +35,7 @@ function Login() {
     return () => controller.abort()
   }, [intento])
 
-  async function ingresar(evento) {
+  async function ingresar(evento) { // Funcion para enviar el formulario de login
     evento.preventDefault()
     setCargando(true)
     setError('')
